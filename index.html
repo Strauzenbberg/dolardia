@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>USD/BRL — Últimos 30 dias</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3"></script>
+  <style>
+    :root{
+      --bg: #0e1116;
+      --bg-2: #11161f;
+      --card: #141821;
+      --text: #e7ebf3;
+      --muted: rgba(231,235,243,0.65);
+      --muted-2: rgba(231,235,243,0.45);
+      --border: rgba(255,255,255,0.08);
+      --accent: #00C88C;
+      --accent-weak: rgba(0,200,140,0.18);
+      --red: #ff5d5d;
+      --red-weak: rgba(255,93,93,0.18);
+      --yellow: #f5c84c;
+    }
+    *{box-sizing:border-box}
+    html, body {height:100%}
+    body{
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+      color: var(--text);
+      background: radial-gradient(1200px 800px at 20% -10%, #1a2233 0%, transparent 60%),
+                  radial-gradient(900px 700px at 110% 10%, #18202b 0%, transparent 55%),
+                  var(--bg);
+    }
+    .container{
+      max-width: 1100px;
+      margin: 32px auto 64px;
+      padding: 0 20px;
+    }
+    header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      margin-bottom: 18px;
+    }
+    h1{
+      margin:0;
+      font-size: 22px;
+      letter-spacing: 0.2px;
+    }
+    .sub{
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 4px;
+    }
+    .chip{
+      padding: 6px 10px;
+      font-size: 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+      color: var(--muted);
+      user-select: none;
+    }
+    .chip.online{ background: var(--accent-weak); color: #bff3e1; border-color: rgba(0,200,140,0.3);}
+    .chip.offline{ background: var(--red-weak); color: #ffd2d2; border-color: rgba(255,93,93,0.35);}
+
+    .cards{
+      display:grid;
+      grid-template-columns: repeat(4, minmax(0,1fr));
+      gap: 14px;
+      margin-top: 10px;
+    }
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 16px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.03);
+    }
+    .label{
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted-2);
+      margin-bottom: 8px;
+    }
+    .value{
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text);
+      display:flex; align-items: baseline; gap: 8px;
+    }
+    .price-row{
+      display:flex; align-items:center; gap: 10px;
+    }
+    .price{
+      font-size: 40px;
+      line-height: 1;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+    .arrow{
+      font-size: 22px;
+      line-height: 1;
+      padding: 4px 8px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+      color: var(--muted);
+    }
+    .arrow.up{ color: #bff3e1; background: var(--accent-weak); border-color: rgba(0,200,140,0.35);}
+    .arrow.down{ color: #ffd2d2; background: var(--red-weak); border-color: rgba(255,93,93,0.35);}
+    .arrow.flat{ color: var(--muted); }
+    .muted{ color: var(--muted); font-weight: 500;}
+    .sep{ color: var(--muted-2); margin: 0 6px;}
+
+    .panel{
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015));
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px;
+      margin-top: 14px;
+      height: 420px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.03);
+    }
+    .panel-header{
+      display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;
+    }
+    .panel-title{
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .chart-wrap{ position: relative; height: calc(100% - 24px); }
+
+    footer{
+      margin-top: 14px;
+      color: var(--muted-2);
+      font-size: 12px;
+    }
+
+    @media (max-width: 980px){
+      .cards{ grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .price{ font-size: 34px; }
+    }
+    @media (max-width: 560px){
+      header{ flex-direction: column; align-items:flex-start; }
+      .cards{ grid-template-columns: 1fr; }
+      .price{ font-size: 30px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1>Dólar - Últimos 30 dias</h1>
+        <div class="sub">Paridade USD/BRL (histórico diário)</div>
+      </div>
+      <div>
+        <span id="status" class="chip offline">offline</span>
+      </div>
+    </header>
+
+    <section class="cards">
+      <div class="card">
+        <div class="label">Preço atual</div>
+        <div class="price-row">
+          <span id="price" class="price">—</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="label">Máxima (30d)</div>
+        <div class="value">
+          <span id="max30">—</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="label">Mínima (30d)</div>
+        <div class="value">
+          <span id="min30">—</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="label">Atualizado</div>
+        <div class="value">
+          <span id="updated">—</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-header">
+        <div class="panel-title">Histórico USD/BRL — 30 dias</div>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="chart"></canvas>
+      </div>
+    </section>
+
+    <footer>
+      Fonte de dados: economia.awesomeapi.com.br — somente para fins informativos.
+    </footer>
+  </div>
+
+  <script>
+    const API_URL = 'https://economia.awesomeapi.com.br/json/daily/USD-BRL/30';
+    let chart;
+
+    // Atalhos dos elementos
+    const $ = (s) => document.querySelector(s);
+    const elPrice   = $('#price');
+    const elMax30   = $('#max30');
+    const elMin30   = $('#min30');
+    const elUpdated = $('#updated');
+    const elStatus  = $('#status');
+
+    window.addEventListener('load', () => {
+      initChart();
+      fetchHistory30d();
+    });
+
+    // Formatação
+    function formatBRL(v){
+      return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
+
+    async function fetchHistory30d(){
+      try{
+        elStatus.textContent = 'online';
+        elStatus.className = 'chip online';
+
+        const res = await fetch(API_URL, { cache: 'no-store' });
+        if(!res.ok) throw new Error('HTTP ' + res.status);
+        const json = await res.json();
+
+        // A API retorna mais recente primeiro; invertendo para cronológico
+        const series = json.reverse().map(d => ({
+          x: new Date(Number(d.timestamp) * 1000),
+          y: Number(d.bid)
+        }));
+
+        // Preenche cards
+        const prices = series.map(p => p.y);
+        const last = series[series.length - 1];
+        elPrice.textContent   = formatBRL(last.y);
+        elMax30.textContent   = formatBRL(Math.max(...prices));
+        elMin30.textContent   = formatBRL(Math.min(...prices));
+        elUpdated.textContent = last.x.toLocaleDateString('pt-BR');
+
+        // Atualiza gráfico
+        chart.data.datasets[0].data = series;
+
+        // Ajusta escala Y com margem
+        const min = Math.min(...prices);
+        const max = Math.max(...prices);
+        chart.options.scales.y.suggestedMin = min * 0.995;
+        chart.options.scales.y.suggestedMax = max * 1.005;
+
+        chart.update();
+
+        // Título da página com o preço atual
+        document.title = `${formatBRL(last.y)} • USD/BRL — 30 dias`;
+
+      }catch(err){
+        elStatus.textContent = 'offline';
+        elStatus.className = 'chip offline';
+      }
+    }
+
+    function initChart(){
+      const ctx = document.getElementById('chart').getContext('2d');
+      const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+      gradient.addColorStop(0, 'rgba(0, 200, 140, 0.25)');
+      gradient.addColorStop(1, 'rgba(0, 200, 140, 0)');
+
+      chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          datasets: [{
+            label: 'USD/BRL',
+            data: [],
+            borderColor: '#00C88C',
+            backgroundColor: gradient,
+            fill: true,
+            tension: 0.35,
+            borderWidth: 2,
+            pointRadius: 0,
+            pointHitRadius: 8,
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              mode: 'nearest',
+              intersect: false,
+              displayColors: false,
+              backgroundColor: 'rgba(20,22,28,0.92)',
+              borderColor: 'rgba(255,255,255,0.08)',
+              borderWidth: 1,
+              padding: 10,
+              callbacks: {
+                title: (items) => {
+                  const d = new Date(items[0].parsed.x);
+                  return d.toLocaleDateString('pt-BR');
+                },
+                label: (item) => `Preço: ${formatBRL(item.parsed.y)}`
+              }
+            }
+          },
+          scales: {
+            x: {
+              type: 'time',
+              time: {
+                unit: 'day',
+                tooltipFormat: 'dd/MM/yyyy',
+                displayFormats: { day: 'dd/MM' }
+              },
+              ticks: { color: 'rgba(231,235,243,0.65)', maxRotation: 0, autoSkip: true },
+              grid: { color: 'rgba(255,255,255,0.06)' },
+            },
+            y: {
+              ticks: {
+                color: 'rgba(231,235,243,0.65)',
+                callback: (v) => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+              },
+              grid: { color: 'rgba(255,255,255,0.06)' }
+            }
+          }
+        }
+      });
+    }
+  </script>
+</body>
+</html>
+```
