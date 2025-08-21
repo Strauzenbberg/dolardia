@@ -8,19 +8,14 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3"></script>
   <style>
-    :root{
+    :root {
       --bg: #0e1116;
-      --bg-2: #11161f;
-      --card: #141821;
       --text: #e7ebf3;
       --muted: rgba(231,235,243,0.65);
-      --muted-2: rgba(231,235,243,0.45);
       --border: rgba(255,255,255,0.08);
       --accent: #00C88C;
       --accent-weak: rgba(0,200,140,0.18);
-      --red: #ff5d5d;
       --red-weak: rgba(255,93,93,0.18);
-      --yellow: #f5c84c;
     }
     * { box-sizing: border-box; }
     html, body { height: 100%; margin: 0; }
@@ -62,9 +57,18 @@
       background: rgba(255,255,255,0.03);
       color: var(--muted);
       user-select: none;
+      position: relative;
     }
-    .chip.online { background: var(--accent-weak); color: #bff3e1; border-color: rgba(0,200,140,0.3); }
-    .chip.offline { background: var(--red-weak); color: #ffd2d2; border-color: rgba(255,93,93,0.35); }
+    .chip.online {
+      background: var(--accent-weak);
+      color: #bff3e1;
+      border-color: rgba(0,200,140,0.3);
+    }
+    .chip.offline {
+      background: var(--red-weak);
+      color: #ffd2d2;
+      border-color: rgba(255,93,93,0.35);
+    }
 
     .cards {
       display: grid;
@@ -83,7 +87,7 @@
       font-size: 12px;
       text-transform: uppercase;
       letter-spacing: 0.12em;
-      color: var(--muted-2);
+      color: rgba(231,235,243,0.45);
       margin-bottom: 8px;
     }
     .value {
@@ -105,20 +109,6 @@
       font-weight: 700;
       letter-spacing: 0.3px;
     }
-    .arrow {
-      font-size: 22px;
-      line-height: 1;
-      padding: 4px 8px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,0.03);
-      color: var(--muted);
-    }
-    .arrow.up { color: #bff3e1; background: var(--accent-weak); border-color: rgba(0,200,140,0.35); }
-    .arrow.down { color: #ffd2d2; background: var(--red-weak); border-color: rgba(255,93,93,0.35); }
-    .arrow.flat { color: var(--muted); }
-    .muted { color: var(--muted); font-weight: 500; }
-    .sep { color: var(--muted-2); margin: 0 6px; }
 
     .panel {
       background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015));
@@ -139,11 +129,13 @@
       font-size: 14px;
       color: var(--muted);
     }
-    .chart-wrap { position: relative; height: calc(100% - 24px); }
-
+    .chart-wrap {
+      position: relative;
+      height: calc(100% - 24px);
+    }
     footer {
       margin-top: 14px;
-      color: var(--muted-2);
+      color: rgba(231,235,243,0.45);
       font-size: 12px;
     }
 
@@ -157,7 +149,7 @@
       .price { font-size: 30px; }
     }
 
-    /* Spinner de carregamento */
+    /* spinner */
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
@@ -173,6 +165,22 @@
     }
     .spinner.active {
       display: inline-block;
+    }
+
+    /* neon flash */
+    @keyframes neonGlow {
+      0% {
+        box-shadow:
+          0 0 8px var(--accent),
+          0 0 16px var(--accent),
+          inset 0 0 4px var(--accent);
+      }
+      100% {
+        box-shadow: none;
+      }
+    }
+    .chip.neon {
+      animation: neonGlow 1s ease-out;
     }
   </style>
 </head>
@@ -196,26 +204,17 @@
           <span id="price" class="price">—</span>
         </div>
       </div>
-
       <div class="card">
         <div class="label">Máxima (30d)</div>
-        <div class="value">
-          <span id="max30">—</span>
-        </div>
+        <div class="value"><span id="max30">—</span></div>
       </div>
-
       <div class="card">
         <div class="label">Mínima (30d)</div>
-        <div class="value">
-          <span id="min30">—</span>
-        </div>
+        <div class="value"><span id="min30">—</span></div>
       </div>
-
       <div class="card">
         <div class="label">Atualizado</div>
-        <div class="value">
-          <span id="updated">—</span>
-        </div>
+        <div class="value"><span id="updated">—</span></div>
       </div>
     </section>
 
@@ -237,20 +236,17 @@
     const API_URL = 'https://economia.awesomeapi.com.br/json/daily/USD-BRL/30';
     let chart;
 
-    // Atalhos dos elementos
-    const $          = s => document.querySelector(s);
-    const elPrice    = $('#price');
-    const elMax30    = $('#max30');
-    const elMin30    = $('#min30');
-    const elUpdated  = $('#updated');
-    const elStatus   = $('#status');
-    const elSpinner  = $('#spinner');
+    const $         = s => document.querySelector(s);
+    const elPrice   = $('#price');
+    const elMax30   = $('#max30');
+    const elMin30   = $('#min30');
+    const elUpdated = $('#updated');
+    const elStatus  = $('#status');
+    const elSpinner = $('#spinner');
 
     window.addEventListener('load', () => {
       initChart();
       fetchHistory30d();
-
-      // auto-refresh a cada 10 segundos
       setInterval(fetchHistory30d, 10000);
     });
 
@@ -259,21 +255,24 @@
     }
 
     async function fetchHistory30d() {
+      // flash neon
+      elStatus.textContent = 'online';
+      elStatus.className = 'chip online';
+      elStatus.classList.add('neon');
+      setTimeout(() => elStatus.classList.remove('neon'), 1000);
+
+      // spinner on
       elSpinner.classList.add('active');
 
       try {
-        elStatus.textContent = 'online';
-        elStatus.className = 'chip online';
-
         const res = await fetch(API_URL, { cache: 'no-store' });
         if (!res.ok) throw new Error('HTTP ' + res.status);
-        const json = await res.json();
+        const data = await res.json();
 
-        const series = json.reverse().map(d => ({
-          x: new Date(Number(d.timestamp) * 1000),
-          y: Number(d.bid)
+        const series = data.reverse().map(d => ({
+          x: new Date(+d.timestamp * 1000),
+          y: +d.bid
         }));
-
         const prices = series.map(p => p.y);
         const last = series[series.length - 1];
 
@@ -283,15 +282,13 @@
         elUpdated.textContent = last.x.toLocaleDateString('pt-BR');
 
         chart.data.datasets[0].data = series;
-        const min = Math.min(...prices);
-        const max = Math.max(...prices);
+        const min = Math.min(...prices), max = Math.max(...prices);
         chart.options.scales.y.suggestedMin = min * 0.995;
         chart.options.scales.y.suggestedMax = max * 1.005;
         chart.update();
 
         document.title = `${formatBRL(last.y)} • USD/BRL — 30 dias`;
-
-      } catch(error) {
+      } catch {
         elStatus.textContent = 'offline';
         elStatus.className = 'chip offline';
       } finally {
@@ -301,9 +298,9 @@
 
     function initChart() {
       const ctx = document.getElementById('chart').getContext('2d');
-      const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-      gradient.addColorStop(0, 'rgba(0, 200, 140, 0.25)');
-      gradient.addColorStop(1, 'rgba(0, 200, 140, 0)');
+      const grad = ctx.createLinearGradient(0,0,0,400);
+      grad.addColorStop(0, 'rgba(0,200,140,0.25)');
+      grad.addColorStop(1, 'rgba(0,200,140,0)');
 
       chart = new Chart(ctx, {
         type: 'line',
@@ -312,12 +309,12 @@
             label: 'USD/BRL',
             data: [],
             borderColor: '#00C88C',
-            backgroundColor: gradient,
+            backgroundColor: grad,
             fill: true,
             tension: 0.35,
             borderWidth: 2,
             pointRadius: 0,
-            pointHitRadius: 8,
+            pointHitRadius: 8
           }]
         },
         options: {
@@ -335,10 +332,7 @@
               borderWidth: 1,
               padding: 10,
               callbacks: {
-                title: items => {
-                  const d = new Date(items[0].parsed.x);
-                  return d.toLocaleDateString('pt-BR');
-                },
+                title: items => new Date(items[0].parsed.x).toLocaleDateString('pt-BR'),
                 label: item => `Preço: ${formatBRL(item.parsed.y)}`
               }
             }
@@ -352,7 +346,7 @@
                 displayFormats: { day: 'dd/MM' }
               },
               ticks: { color: 'rgba(231,235,243,0.65)', maxRotation: 0, autoSkip: true },
-              grid: { color: 'rgba(255,255,255,0.06)' },
+              grid: { color: 'rgba(255,255,255,0.06)' }
             },
             y: {
               ticks: {
