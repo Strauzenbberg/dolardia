@@ -22,39 +22,39 @@
       --red-weak: rgba(255,93,93,0.18);
       --yellow: #f5c84c;
     }
-    *{box-sizing:border-box}
-    html, body {height:100%}
-    body{
-      margin:0;
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; }
+    body {
       font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
       color: var(--text);
-      background: radial-gradient(1200px 800px at 20% -10%, #1a2233 0%, transparent 60%),
-                  radial-gradient(900px 700px at 110% 10%, #18202b 0%, transparent 55%),
-                  var(--bg);
+      background:
+        radial-gradient(1200px 800px at 20% -10%, #1a2233 0%, transparent 60%),
+        radial-gradient(900px 700px at 110% 10%, #18202b 0%, transparent 55%),
+        var(--bg);
     }
-    .container{
+    .container {
       max-width: 1100px;
       margin: 32px auto 64px;
       padding: 0 20px;
     }
-    header{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:16px;
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
       margin-bottom: 18px;
     }
-    h1{
-      margin:0;
+    h1 {
+      margin: 0;
       font-size: 22px;
       letter-spacing: 0.2px;
     }
-    .sub{
+    .sub {
       color: var(--muted);
       font-size: 13px;
       margin-top: 4px;
     }
-    .chip{
+    .chip {
       padding: 6px 10px;
       font-size: 12px;
       border-radius: 999px;
@@ -63,45 +63,49 @@
       color: var(--muted);
       user-select: none;
     }
-    .chip.online{ background: var(--accent-weak); color: #bff3e1; border-color: rgba(0,200,140,0.3);}
-    .chip.offline{ background: var(--red-weak); color: #ffd2d2; border-color: rgba(255,93,93,0.35);}
+    .chip.online { background: var(--accent-weak); color: #bff3e1; border-color: rgba(0,200,140,0.3); }
+    .chip.offline { background: var(--red-weak); color: #ffd2d2; border-color: rgba(255,93,93,0.35); }
 
-    .cards{
-      display:grid;
+    .cards {
+      display: grid;
       grid-template-columns: repeat(4, minmax(0,1fr));
       gap: 14px;
       margin-top: 10px;
     }
-    .card{
+    .card {
       background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
       border: 1px solid var(--border);
       border-radius: 14px;
       padding: 14px 16px;
       box-shadow: 0 8px 30px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.03);
     }
-    .label{
+    .label {
       font-size: 12px;
       text-transform: uppercase;
       letter-spacing: 0.12em;
       color: var(--muted-2);
       margin-bottom: 8px;
     }
-    .value{
+    .value {
       font-size: 20px;
       font-weight: 600;
       color: var(--text);
-      display:flex; align-items: baseline; gap: 8px;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
     }
-    .price-row{
-      display:flex; align-items:center; gap: 10px;
+    .price-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
-    .price{
+    .price {
       font-size: 40px;
       line-height: 1;
       font-weight: 700;
       letter-spacing: 0.3px;
     }
-    .arrow{
+    .arrow {
       font-size: 22px;
       line-height: 1;
       padding: 4px 8px;
@@ -110,13 +114,13 @@
       background: rgba(255,255,255,0.03);
       color: var(--muted);
     }
-    .arrow.up{ color: #bff3e1; background: var(--accent-weak); border-color: rgba(0,200,140,0.35);}
-    .arrow.down{ color: #ffd2d2; background: var(--red-weak); border-color: rgba(255,93,93,0.35);}
-    .arrow.flat{ color: var(--muted); }
-    .muted{ color: var(--muted); font-weight: 500;}
-    .sep{ color: var(--muted-2); margin: 0 6px;}
+    .arrow.up { color: #bff3e1; background: var(--accent-weak); border-color: rgba(0,200,140,0.35); }
+    .arrow.down { color: #ffd2d2; background: var(--red-weak); border-color: rgba(255,93,93,0.35); }
+    .arrow.flat { color: var(--muted); }
+    .muted { color: var(--muted); font-weight: 500; }
+    .sep { color: var(--muted-2); margin: 0 6px; }
 
-    .panel{
+    .panel {
       background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015));
       border: 1px solid var(--border);
       border-radius: 16px;
@@ -125,29 +129,50 @@
       height: 420px;
       box-shadow: 0 10px 40px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.03);
     }
-    .panel-header{
-      display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
     }
-    .panel-title{
+    .panel-title {
       font-size: 14px;
       color: var(--muted);
     }
-    .chart-wrap{ position: relative; height: calc(100% - 24px); }
+    .chart-wrap { position: relative; height: calc(100% - 24px); }
 
-    footer{
+    footer {
       margin-top: 14px;
       color: var(--muted-2);
       font-size: 12px;
     }
 
-    @media (max-width: 980px){
-      .cards{ grid-template-columns: repeat(2, minmax(0,1fr)); }
-      .price{ font-size: 34px; }
+    @media (max-width: 980px) {
+      .cards { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .price { font-size: 34px; }
     }
-    @media (max-width: 560px){
-      header{ flex-direction: column; align-items:flex-start; }
-      .cards{ grid-template-columns: 1fr; }
-      .price{ font-size: 30px; }
+    @media (max-width: 560px) {
+      header { flex-direction: column; align-items: flex-start; }
+      .cards { grid-template-columns: 1fr; }
+      .price { font-size: 30px; }
+    }
+
+    /* Spinner de carregamento */
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--muted);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      display: none;
+      margin-left: 8px;
+    }
+    .spinner.active {
+      display: inline-block;
     }
   </style>
 </head>
@@ -158,8 +183,9 @@
         <h1>Dólar - Últimos 30 dias</h1>
         <div class="sub">Paridade USD/BRL (histórico diário)</div>
       </div>
-      <div>
+      <div style="display: flex; align-items: center;">
         <span id="status" class="chip offline">offline</span>
+        <div id="spinner" class="spinner" role="status" aria-label="Carregando dados"></div>
       </div>
     </header>
 
@@ -212,67 +238,68 @@
     let chart;
 
     // Atalhos dos elementos
-    const $ = (s) => document.querySelector(s);
-    const elPrice   = $('#price');
-    const elMax30   = $('#max30');
-    const elMin30   = $('#min30');
-    const elUpdated = $('#updated');
-    const elStatus  = $('#status');
+    const $          = s => document.querySelector(s);
+    const elPrice    = $('#price');
+    const elMax30    = $('#max30');
+    const elMin30    = $('#min30');
+    const elUpdated  = $('#updated');
+    const elStatus   = $('#status');
+    const elSpinner  = $('#spinner');
 
     window.addEventListener('load', () => {
       initChart();
       fetchHistory30d();
+
+      // auto-refresh a cada 10 segundos
+      setInterval(fetchHistory30d, 10000);
     });
 
-    // Formatação
-    function formatBRL(v){
+    function formatBRL(v) {
       return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     }
 
-    async function fetchHistory30d(){
-      try{
+    async function fetchHistory30d() {
+      elSpinner.classList.add('active');
+
+      try {
         elStatus.textContent = 'online';
         elStatus.className = 'chip online';
 
         const res = await fetch(API_URL, { cache: 'no-store' });
-        if(!res.ok) throw new Error('HTTP ' + res.status);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
         const json = await res.json();
 
-        // A API retorna mais recente primeiro; invertendo para cronológico
         const series = json.reverse().map(d => ({
           x: new Date(Number(d.timestamp) * 1000),
           y: Number(d.bid)
         }));
 
-        // Preenche cards
         const prices = series.map(p => p.y);
         const last = series[series.length - 1];
+
         elPrice.textContent   = formatBRL(last.y);
         elMax30.textContent   = formatBRL(Math.max(...prices));
         elMin30.textContent   = formatBRL(Math.min(...prices));
         elUpdated.textContent = last.x.toLocaleDateString('pt-BR');
 
-        // Atualiza gráfico
         chart.data.datasets[0].data = series;
-
-        // Ajusta escala Y com margem
         const min = Math.min(...prices);
         const max = Math.max(...prices);
         chart.options.scales.y.suggestedMin = min * 0.995;
         chart.options.scales.y.suggestedMax = max * 1.005;
-
         chart.update();
 
-        // Título da página com o preço atual
         document.title = `${formatBRL(last.y)} • USD/BRL — 30 dias`;
 
-      }catch(err){
+      } catch(error) {
         elStatus.textContent = 'offline';
         elStatus.className = 'chip offline';
+      } finally {
+        elSpinner.classList.remove('active');
       }
     }
 
-    function initChart(){
+    function initChart() {
       const ctx = document.getElementById('chart').getContext('2d');
       const gradient = ctx.createLinearGradient(0, 0, 0, 400);
       gradient.addColorStop(0, 'rgba(0, 200, 140, 0.25)');
@@ -308,11 +335,11 @@
               borderWidth: 1,
               padding: 10,
               callbacks: {
-                title: (items) => {
+                title: items => {
                   const d = new Date(items[0].parsed.x);
                   return d.toLocaleDateString('pt-BR');
                 },
-                label: (item) => `Preço: ${formatBRL(item.parsed.y)}`
+                label: item => `Preço: ${formatBRL(item.parsed.y)}`
               }
             }
           },
@@ -330,7 +357,7 @@
             y: {
               ticks: {
                 color: 'rgba(231,235,243,0.65)',
-                callback: (v) => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+                callback: v => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
               },
               grid: { color: 'rgba(255,255,255,0.06)' }
             }
@@ -339,7 +366,5 @@
       });
     }
   </script>
- 
-
 </body>
 </html>
